@@ -140,7 +140,6 @@ class AppearanceBranch(torch.nn.Module):
         return patch_features, patch_shapes
 
     def _initialize_center(self, train_data):
-        """Average adapted features over samples, including a partial last batch."""
         center_sum = None
         sample_count = 0
         with torch.no_grad():
@@ -264,7 +263,6 @@ class AppearanceBranch(torch.nn.Module):
                 break
 
     def predict(self, dataloader):
-        """Return only image-level scores, labels and paths."""
         scores, labels, paths = [], [], []
         for batch in tqdm.tqdm(dataloader, desc="Appearance inference", leave=False):
             scores.extend(self._predict(batch["image"]))
@@ -289,12 +287,10 @@ class AppearanceBranch(torch.nn.Module):
         return scores
 
     def _image_scores(self, patch_scores, output_size):
-        """Upsample, smooth each image independently, then take its maximum."""
         maps = F.interpolate(
             patch_scores.unsqueeze(1), size=output_size,
             mode="bilinear", align_corners=False,
         ).squeeze(1).detach().cpu().numpy()
-        # Match the original anomaly-map smoothing (sigma in input-image pixels).
         return np.asarray([
             gaussian_filter(score_map, sigma=4, mode="reflect").max()
             for score_map in maps
