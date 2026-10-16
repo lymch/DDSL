@@ -1,0 +1,12 @@
+# Direct dependencies of the detection-only DDSL implementation.
+# The previous complete environment snapshot is in the source backup.
+torch==2.3.0
+torchvision==0.18.0
+numpy==1.22.4
+scipy==1.10.1
+opencv-python==4.5.1.48
+pillow==10.4.0
+scikit-learn==1.3.2
+PyYAML==6.0.3
+tensorboard==2.14.0
+tqdm==4.67.1
