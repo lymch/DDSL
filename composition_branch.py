@@ -81,7 +81,6 @@ class CompositionBranch(torch.nn.Module):
         return features
 
     def trainer(self, training_data):
-        """Save the completed final epoch; no test-set model selection."""
         if self.meta_epochs < 1:
             raise ValueError("meta_epochs must be positive.")
         path = os.path.join(self.ckpt_dir, "ckpt_last.pth")
@@ -112,7 +111,6 @@ class CompositionBranch(torch.nn.Module):
             self.logic_dsc_opt.zero_grad()
             features = self.extract_features(batch["image_name"])
             anomalous = features.clone()
-            # Keep the original per-image Gaussian perturbation sequence.
             for i in range(len(features)):
                 anomalous[i] = anomalous[i] + torch.randn_like(anomalous[i]) * self.logic_noise
             scores = self.logic_dsc(torch.cat((features, anomalous), dim=0))
@@ -138,7 +136,6 @@ class CompositionBranch(torch.nn.Module):
             raise ValueError("Expected a final-epoch checkpoint: " + path)
         if state.get("category", self.category) != self.category:
             raise ValueError("Checkpoint category does not match the configured product.")
-        # Older final-epoch checkpoints may contain an unused semantic_proj entry.
         self.logic_dsc.load_state_dict(state["logic_dsc"])
 
     def predict(self, dataloader):
