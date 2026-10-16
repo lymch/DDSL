@@ -21,7 +21,6 @@ def synthesize_anomalies(features, centers, sigma, clamp_min=0.1, clamp_max=3.0)
     radial = features - centers
     distance = torch.norm(radial, dim=1, keepdim=True)
     radial_direction = radial / (distance + eps)
-    # Preserve the original CPU noise draw followed by device transfer.
     noise = torch.normal(0, sigma, features.shape).to(features.device)
     magnitude = torch.norm(noise, dim=1, keepdim=True)
     direction = noise / (magnitude + eps)
