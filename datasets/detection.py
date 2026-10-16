@@ -1,4 +1,3 @@
-"""Detection datasets; no pixel-level ground-truth masks are read."""
 from pathlib import Path
 
 from PIL import Image
@@ -31,8 +30,6 @@ class DetectionDataset(torch.utils.data.Dataset):
                     self.samples.append((path, defect_dir.name))
         if not self.samples:
             raise ValueError("Dataset split contains no images: " + str(folder))
-        # Original active preprocessing: square resize, center crop, ImageNet normalization.
-        # Identity random augmentations in the old MVTec loader are intentionally removed.
         self.transform = None
         if load_images:
             self.transform = transforms.Compose([
