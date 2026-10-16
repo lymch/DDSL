@@ -24,7 +24,6 @@ def load_yaml(path):
 
 
 def branch_seeds(config, fallback):
-    """Resolve independent initialization/training seeds for one branch."""
     base = config.get("seed", fallback)
     seeds = {name: config.get(name, base) for name in ("init_seed", "train_seed")}
     for name, value in seeds.items():
@@ -116,7 +115,6 @@ def main(config, logic_config):
                 if os.path.exists(path):
                     raise FileExistsError("Use a new run name; final checkpoint exists: " + path)
             for model, model_config, is_composition in models:
-                # Reset before loader creation and training, independently of other branches.
                 fix_seeds(model.random_seeds["train_seed"])
                 loader = make_loader(
                     model_config["dataset"], category, "train", load_images=not is_composition
@@ -130,7 +128,6 @@ def main(config, logic_config):
             composition_val = predict_split(
                 composition, logic_config, category, "validation", composition=True
             )
-            # Calibration uses the same normal images, regardless of loader ordering.
             align_scores(appearance_val[0], appearance_val[2], composition_val[2])
             appearance_stats = fit_normalization(appearance_val[0], appearance_val[1])
             composition_stats = fit_normalization(composition_val[0], composition_val[1])
