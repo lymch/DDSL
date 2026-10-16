@@ -42,7 +42,6 @@ class AppearanceBranch(torch.nn.Module):
     ):
         # 1.Feature Extractor
         self.backbone = backbone.to(device)
-        # Freeze parameters and BatchNorm statistics before the dimension probe.
         self.backbone.requires_grad_(False)
         self.backbone.eval()
         self.layers_to_extract_from = layers_to_extract_from
@@ -159,7 +158,6 @@ class AppearanceBranch(torch.nn.Module):
             self.c1 = center_sum / sample_count
 
     def trainer(self, train_data):
-        """Train for the configured epochs; never select weights on test data."""
         if self.meta_epochs < 1:
             raise ValueError("meta_epochs must be positive.")
         checkpoint_path = os.path.join(self.ckpt_dir, "ckpt_last.pth")
@@ -189,7 +187,6 @@ class AppearanceBranch(torch.nn.Module):
         return checkpoint_path
 
     def load_last_checkpoint(self):
-        """Load only a completed final-epoch checkpoint, never legacy best weights."""
         checkpoint_path = os.path.join(self.ckpt_dir, "ckpt_last.pth")
         if not os.path.isfile(checkpoint_path):
             raise FileNotFoundError(
