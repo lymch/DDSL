@@ -104,7 +104,6 @@ class CompositionBranch(torch.nn.Module):
         return path
 
     def _train_discriminator(self, training_data):
-        """Train for one complete pass over the training loader."""
         self.logic_dsc.train()
         losses = []
         for batch in tqdm.tqdm(training_data, desc="Composition training", leave=False):
@@ -139,7 +138,6 @@ class CompositionBranch(torch.nn.Module):
         self.logic_dsc.load_state_dict(state["logic_dsc"])
 
     def predict(self, dataloader):
-        """Return image scores, binary labels and image paths, including batch size 1."""
         self.logic_dsc.eval()
         scores, labels, paths = [], [], []
         with torch.no_grad():
