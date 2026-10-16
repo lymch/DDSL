@@ -6,7 +6,6 @@ import numpy as np
 import torch
 from PIL import Image
 
-# Counts include background class 0; feature dimensions exclude it.
 PRODUCTS = {
     "breakfast_box": (7, 6, False),
     "juice_bottle": (9, 12, True),
