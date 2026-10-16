@@ -31,15 +31,6 @@ def get_logic_hist_features(mask, num_classes=5):
     return geo_features
 
 def get_logic_pos_features(masks, dataset_type="splicing_connectors"):
-        """
-        提取产品专用的位置特征：连接比例或归一化组件中心坐标。
-
-        Args:
-            masks: np.ndarray, 形状为 (Batch, H, W)，值代表类别 ID
-            dataset_type: 字符串，用于选择不同的 logic_config
-        Returns:
-            batch_results: 每张图的位置特征列表；缺失组件对应零值。
-        """
         if isinstance(masks, torch.Tensor):
             masks = masks.detach().cpu().numpy().astype(np.int32)
         else:
@@ -110,11 +101,6 @@ def get_logic_pos_features(masks, dataset_type="splicing_connectors"):
         return batch_results
 
 def _get_mask_center_xy(mask, label_type):
-    """
-    计算掩码重心的 X 和 Y 坐标
-    Returns:
-        (x_center, y_center): 如果掩码为空则返回 (0.0, 0.0)
-    """
     m = cv2.moments(mask)
     if m["m00"] == 0:
         return 0.0, 0.0
@@ -152,9 +138,6 @@ def _get_liq_main_id(mask, ids):
         return focus_id
 
 def _calculate_joint_ratio(mask_w, mask_t, joint_pos='left', dilation_size=10):
-        """
-            基于接线点所在列的局部高度计算比例
-        """
         if not np.any(mask_t) or not np.any(mask_w):
             return 0
         kernel = np.ones((dilation_size, dilation_size), np.uint8)
@@ -163,8 +146,8 @@ def _calculate_joint_ratio(mask_w, mask_t, joint_pos='left', dilation_size=10):
         m = cv2.moments(intersection)
         if m["m00"] == 0:
             return 0
-        x_joint = int(m["m10"] / m["m00"])  # 连接点的横坐标中心
-        y_joint = m["m01"] / m["m00"]  # 连接点的纵坐标中心
+        x_joint = int(m["m10"] / m["m00"])
+        y_joint = m["m01"] / m["m00"]
         if joint_pos == 'left':
             column = x_joint - 5
         else:
@@ -182,7 +165,7 @@ def _calculate_joint_ratio(mask_w, mask_t, joint_pos='left', dilation_size=10):
                         if len(y_indices) > 0: break
                 if len(y_indices) > 0: break
         if len(y_indices) == 0:
-            return 0  # 依然没找到有效高度
+            return 0
         y_min_local = y_indices.min()
         y_max_local = y_indices.max()
         local_height = y_max_local - y_min_local
@@ -191,7 +174,6 @@ def _calculate_joint_ratio(mask_w, mask_t, joint_pos='left', dilation_size=10):
         ratio = (y_joint - y_min_local) / local_height
         return ratio
 def read_seg_maps(seg_map_path, image_names):
-    """Read integer component labels, not binary defect ground-truth masks."""
     maps = []
     for name in image_names:
         path = os.path.join(seg_map_path, *str(name).replace("\\", "/").split("/"))
