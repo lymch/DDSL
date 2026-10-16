@@ -1,0 +1,18 @@
+results_path: 'results'
+seed: 0
+log_group: 'composition'
+log_project: 'MVTecloco'
+run_name: 'run'
+focnet:
+  meta_epochs: 160
+  logic_dsc_hidden: 256
+  logic_dsc_layers: 2
+  logic_noise: 0.001
+dataset:
+  name: 'mvtec_loco'
+  data_path: /root/shared-nvme/dataset/mvtec_loco_foc/mvtec_loco_padding
+  seg_path: /root/shared-nvme/dataset/mvtec_loco_foc/mvtec_loco_seg
+  subdatasets: ['breakfast_box', 'juice_bottle', 'pushpins', 'screw_bag', 'splicing_connectors']
+  batch_size: 8
+  resize: 256
+  imagesize: 256

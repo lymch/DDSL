@@ -1,0 +1,27 @@
+results_path: 'results'
+gpu: ['0']
+seed: 0
+log_group: 'appearance'
+log_project: 'MVTecloco'
+run_name: 'run'
+net:
+  backbone_names: ['wideresnet50']
+  layers_to_extract_from: ['layer2', 'layer3']
+  pretrain_embed_dimension: 1536
+  target_embed_dimension: 1536
+  patchsize: 3
+  meta_epochs: 160
+  noise: 0.015
+  clamp_min: 0.1
+  clamp_max: 3.0
+  dsc_layers: 2
+  pre_proj: 1
+  lr: 0.0001
+  limit: -1
+dataset:
+  name: 'mvtec_loco'
+  data_path: /root/shared-nvme/dataset/mvtec_loco_struct
+  subdatasets: ['breakfast_box', 'juice_bottle', 'pushpins', 'screw_bag', 'splicing_connectors']
+  batch_size: 8
+  resize: 512
+  imagesize: 512
